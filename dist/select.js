@@ -237,6 +237,13 @@ uis.directive('uiSelectChoices',
           }
         });
 
+        // BJOND cbozzuto 2-3-2016: Call refresh function immediately when opened to get updated data.
+        scope.$watch('$select.open', function() {
+          if (scope.$select.open) {
+            scope.$eval(attrs.refresh);
+          }
+        });
+
         attrs.$observe('refreshDelay', function() {
           // $eval() is needed otherwise we get a string instead of a number
           var refreshDelay = scope.$eval(attrs.refreshDelay);
@@ -661,13 +668,14 @@ uis.controller('uiSelectCtrl',
         container = ctrl.searchInput.parent().parent()[0],
         calculateContainerWidth = function() {
           // Return the container width only if the search input is visible
-          return container.clientWidth * !!input.offsetParent;
+          // BJOND cbozzuto 2-3-2016: Calculation here was hardcoded, this one adapts to style changes (i.e. padding)
+          return $(container).width() * !!input.offsetParent;
         },
         updateIfVisible = function(containerWidth) {
           if (containerWidth === 0) {
             return false;
           }
-          var inputWidth = containerWidth - input.offsetLeft - 10;
+          var inputWidth = containerWidth - input.offsetLeft;
           if (inputWidth < 50) inputWidth = containerWidth;
           ctrl.searchInput.css('width', inputWidth+'px');
           return true;
@@ -1150,8 +1158,7 @@ uis.directive('uiSelect',
               return;
             }
 
-            // Hide the dropdown so there is no flicker until $timeout is done executing.
-            dropdown[0].style.opacity = 0;
+            // BJOND cbozzuto 2-3-2016 Cut out style change here claiming to remove a flicker but actually causing one.
 
             // Delay positioning the dropdown until all choices have been added so its height is correct.
             $timeout(function(){
@@ -1181,8 +1188,6 @@ uis.directive('uiSelect',
 
               }
 
-              // Display the dropdown once it has been positioned.
-              dropdown[0].style.opacity = 1;
             });
           } else {
               if (dropdown === null || dropdown.length === 0) {
