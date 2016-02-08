@@ -358,21 +358,24 @@ uis.controller('uiSelectCtrl',
         ctrl.activeIndex = 0;
       }
 
-      var container = $element.querySelectorAll('.ui-select-choices-content');
-      if (ctrl.$animate && ctrl.$animate.enabled(container[0])) {
-        ctrl.$animate.on('enter', container[0], function (elem, phase) {
-          if (phase === 'close') {
-            // Only focus input after the animation has finished
-            $timeout(function () {
-              ctrl.focusSearchInput(initSearchValue);
-            });
-          }
-        });
-      } else {
+      // BJOND cbozzuto 2-8-2016: This 0.14.0 change for ng-animate support has broken the focus on the search element
+      // on open. Disabling it for now.
+
+      //var container = $element.querySelectorAll('.ui-select-choices-content');
+      //if (ctrl.$animate && ctrl.$animate.enabled(container[0])) {
+      //  ctrl.$animate.on('enter', container[0], function (elem, phase) {
+      //    if (phase === 'close') {
+      //      // Only focus input after the animation has finished
+      //      $timeout(function () {
+      //        ctrl.focusSearchInput(initSearchValue);
+      //      });
+      //    }
+      //  });
+      //} else {
         $timeout(function () {
           ctrl.focusSearchInput(initSearchValue);
         });
-      }
+      //}
     }
   };
 
