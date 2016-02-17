@@ -998,6 +998,17 @@ uis.directive('uiSelect',
           });
         }
 
+        // BJOND cbozzuto 2-17-2016 opens based on scope event name (same as focus-on, but for open).
+        if (angular.isDefined(attrs.openOn)){
+          scope.$on(attrs.openOn, function() {
+            if (!$select.open) {
+              $timeout(function(){
+                $select.activate();
+              });
+            }
+          });
+        }
+
         function onDocumentClick(e) {
           if (!$select.open) return; //Skip it if dropdown is close
 
